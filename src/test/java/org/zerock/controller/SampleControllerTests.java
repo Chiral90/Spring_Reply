@@ -1,6 +1,7 @@
 package org.zerock.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Before;
@@ -23,7 +24,7 @@ import lombok.extern.log4j.Log4j;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration( { "files:src/main/webapp/WEB-INF/spring/root-context.xml",
+@ContextConfiguration( {"file:src/main/webapp/WEB-INF/spring/root-context.xml",
 						"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml"})
 @Log4j
 public class SampleControllerTests {
