@@ -15,10 +15,10 @@
 		 <property name="driverClassName"
 		 	value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
 		 <property name="jdbcUrl"
-		 	value="jdbc:log4jdbc:mysql://localhost:3306/tp?serverTimezone=Asia/Seoul"></property>
+		 	value="jdbc:log4jdbc:mysql://localhost:3307/tp?serverTimezone=Asia/Seoul"></property>
 		 
 		<property name="username" value="root"></property>
-		<property name="password" value="1234"></property>
+		<property name="password" value="72004014"></property>
 	</bean>
 	
 	<!-- HikariCP configuration setting -->
