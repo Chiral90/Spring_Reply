@@ -3,6 +3,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../includes/header.jsp" %>
+
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">Board Detail</h1>
@@ -23,7 +24,7 @@
                         		<!-- 글 번호 -->
                         		<c:forEach items="${board }" var="board">
                         		<div class="form-group">
-                        			<label>No</label><input class="form-control" name="no" 
+                        			<label>No</label><input class="form-control" name="no"
                         			value='<c:out value="${board.no }" />' readonly="readonly">
                         		</div>
                         		<div class="form-group">
@@ -52,7 +53,7 @@
                         		<button data-oper="list" class="btn btn-info">List</button>
                         		<!-- 브라우저에서는 <form> 태그의 내용은 보이지 않고 버튼만 보임 -->
                         		<form id='operForm' action="/board/update" method="get">
-                        			<input type='hidden' id='no' name='no' value='<c:out value="${board.no }" />'>
+                        			<input type='hidden' id='no' name='no' value='<c:out value="${board.no}" />'>
                         			<input type='hidden' id='pageNum' name='pageNum' value='<c:out value="${cri.pageNum }" />'>
                         			<input type='hidden' id='amount' name='amount' value='<c:out value="${cri.amount }" />'>
                         			<!-- 조회 페이지에서 Criteria의 type과 keyword에 대한 처리 -->
@@ -71,9 +72,33 @@
             </div>
             <!-- /.row -->
             
+            <!-- 댓글 관련 JavaScript 모듈 -->
+            <script type="text/javascript" src="/resources/js/reply.js"></script>
+            
+            <script>
+            	
+	    		console.log("-------------");
+	    		console.log("JS TEST");
+	    		
+	    		//var bnoValue = "917481";
+	    		var bnoValue = $("#no").val();
+	    		
+	    		//for replyService add test
+	    		//add()에 던져야하는 파라미터는 JavaScript의 객체 타입으로 만들어서 전송해주고, Ajax 전송 결과를 처리하는 함수를 파라미터로 같이 전달
+	    		replyService.add( // select.jsp 내부에서 Ajax 호출은 replyService라는 이름의 객체에 감춰져 있으므로 필요한 파라미터들만 전달하는 형태로 간결해진다
+	    				{reply:"JS Test", replyer:"tester01", bno:bnoValue}, // JavaScript의 객체 타입으로 만들어서 전송해주고, Ajax 전송 결과를 처리하는 함수를 파라미터로 같이 전달
+	    				function(result) {
+	    					alert("RESULT : " + result);
+	    				}
+	    		);
+            </script>
+            
             <!-- 버튼을 클릭하면 operForm action 실행 -->
             <script type="text/javascript">
             	$(document).ready(function(){
+            		//reply.js의 실행 확인
+    	    		//console.log(replyService);
+            		
             		var operForm = $("#operForm");
             		
             		$("button[data-oper='update']").on("click", function(e) {
