@@ -66,5 +66,25 @@ var replyService = (function(){
 		getList : getList
 	};
 	
+	function remove(rno,callback, error) { // delete 방식으로 데이터를 전달하므로, $.ajax()를 이용해서 구체적으로 type 속성으로 'delete'를 지정
+		$.ajax({
+			type : 'delete',
+			url : '/replies/' + rno,
+			success : function(deleteResult, status, xhr) {
+				if (callback) {
+					callback(deleteResult);
+				}
+			},
+			error : function(xhr, status, er) {
+				if (error) error(er);
+			}
+		})
+	}
+	return {
+		add : add,
+		getList : getList,
+		remove : remove
+	};
+	
 	
 })();

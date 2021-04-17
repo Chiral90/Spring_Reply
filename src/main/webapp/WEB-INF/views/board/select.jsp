@@ -71,7 +71,7 @@
                 <!-- /.col-lg-6 -->
             </div>
             <!-- /.row -->
-            
+            <script> console.log('<c:out value="${cri.pageNum}" />') </script>
             <!-- 댓글 관련 JavaScript 모듈 -->
             <script type="text/javascript" src="/resources/js/reply.js"></script>
             

@@ -205,6 +205,14 @@
 		    <artifactId>log4jdbc-log4j2-jdbc4</artifactId>
 		    <version>1.16</version>
 		</dependency>
+		
+		<dependency>
+		   <groupId>org.apache.httpcomponents</groupId>
+		   <artifactId>httpclient</artifactId>
+		   <version>4.5.2</version>
+		   <scope>runtime</scope>
+		</dependency>
+		
 	</dependencies>
     <build>
         <plugins>

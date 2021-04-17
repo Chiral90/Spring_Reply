@@ -26,8 +26,7 @@ public class ReplyMapperTests {
 	public void testMapper() {
 		log.info(mapper);
 	}
-	
-	private int[] bnoArr = { 917484, 917483, 917482, 917481, 917480, 917479, 917478, 917477, 917476, 917475 };
+	private int[] bnoArr = { 1376208, 1376207, 1376206, 1376205, 1376204, 1376203 };
 	
 	//@Test
 	public void testCreate() {
@@ -37,7 +36,7 @@ public class ReplyMapperTests {
 			//게시물 번호
 			vo.setBno(bnoArr[ i % 5 ]);
 			vo.setReply("reply test " + i );
-			vo.setReplyer("replyer " + i);
+			vo.setReplyer("replyer" + i);
 			
 			mapper.insert(vo);
 		});
@@ -61,7 +60,7 @@ public class ReplyMapperTests {
 		log.info(result);
 	}
 	
-	//@Test
+	@Test
 	public void testUpdate() {
 		int targetRno = 2;
 		
@@ -73,7 +72,7 @@ public class ReplyMapperTests {
 		log.info("Update Count : " + count);
 	}
 	
-	@Test
+	//@Test
 	public void testReadReply() {
 		
 		Criteria cri = new Criteria();
