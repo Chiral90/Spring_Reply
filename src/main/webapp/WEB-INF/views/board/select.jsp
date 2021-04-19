@@ -67,22 +67,148 @@
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->
+                    
+                    <!-- 댓글 목록 처리 -->
+                    <div class='panel panel-default'>
+                    	<!-- <div class="panel-heading">
+                    		<i class="fa fa-comments fa-fw"></i> Reply
+                    	</div> -->
+                    	<div class="panel-heading">
+                    		<i class="fa fa-comments fa-fw"></i> Reply
+                    		<button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>New Reply</button>
+                    	</div>
+                    	
+                    	
+                    	<div class="panel-body">
+                    		<ul class="chat">
+                    			<!-- start reply -->
+                    			<li class="left clearfix" data-rno='12'>
+                    				<div>
+                    					<div class="header">
+                    						<strong class="primary-font">replyer</strong>
+                    						<small class="pull-right text-muted">date</small>
+                    					</div>
+                    					<p>reply</p>
+                    				</div>
+                    			</li>
+                    			<!-- end reply -->
+                    		</ul>
+                    		<!-- end ul -->
+                    	</div>
+                    	
+                    </div>
+                    
                 </div>
                 <!-- /.col-lg-6 -->
             </div>
             <!-- /.row -->
             
+            <!-- Modal(댓글 작성란) 추가 -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            	<div class="modal-dialog">
+            		<div class="modal-content">
+            			<div class="modal-header">
+            				<button type="button" class="close" data-dismiss="modal"
+            				aria-hidden="true">&times;</button>
+            				<h4 class="modal-title" id="myModalLabel">Reply Modal</h4>
+            			</div>
+            			<div class="modal-body">
+            				<div class="form-group">
+            					<label>Reply</label>
+            					<input class="form-control" name='reply' value='New Reply!!!'>
+            				</div>
+            				<div class="form-group">
+            					<label>Replyer</label>
+            					<input class="form-control" name='replyer' value='replyer'>
+            				</div>
+            				<div class="form-group">
+            					<label>Reply Date</label>
+            					<input class="form-control" name='replyDate' value=''>
+            				</div>
+            			</div>
+            			<div class="modal-footer">
+            				<button id="modalModBtn" type="button" class="btn btn-warning" data-dismiss="modal">Modify</button>
+            				<button id="modalRemoveBtn" type="button" class="btn btn-danger">Remove</button>
+            				<button id="modalRegisterBtn" type="button" class="btn btn-default">Register</button>
+            				<button id="modalCloseBtn" type="button" class="btn btn-defualt">Close</button>
+             			</div>
+             		</div>
+             	</div>
+            
+        	</div>
+        	<!-- end Modal Window -->
+            
             <!-- 댓글 관련 JavaScript 모듈 -->
             <script type="text/javascript" src="/resources/js/reply.js"></script>
             
             <script>
-            	
-	    		console.log("-------------");
-	    		console.log("JS TEST");
+            $(document).ready(function(){
 	    		
-	    		//var bnoValue = "917481";
+	    		
 	    		var bnoValue = $("#no").val();
 	    		
+	    		var replyUL = $(".chat");
+	    		
+	    		showList(1);
+	    		
+	    		function showList(page) { // 페이지 번호를 파라미터로 받는다,
+	    			replyService.getList({bno:bnoValue, page:page||1}, function(list) { // 만일 파라미터가 없는 경우 자동으로 1페이지가 되도록 설정
+	    				var str="";
+	    				if(list == null || list.length==0) {
+	    					replyUL.html("");
+	    					return;
+	    				}
+	    				for (var i = 0, len = list.length || 0; i<len;i++) {
+	    					str +="<li class='left clearfix' data-rno='"+list[i].rno+"'>";
+	    					str +="		<div><div class='header'><strong class='primary-font'>"+list[i].replyer+"</strong>";
+	    					str +="			<small class='pull-right text-muted'>"+replyService.displayTime(list[i].replyDate)+"</small></div>";
+	    					str +="			<p>"+list[i].reply+"</p></div></li>";
+	    				}
+	    				replyUL.html(str);
+	    				}); // end function
+	    					
+	    		}// end showList
+	    		
+	    		//test
+	    		/* 
+	    		//18번 댓글 조회
+	    		replyService.get(18, function(data){
+	    			console.log(data);
+	    		})
+	    		 */
+	    		/* 
+	    		//18번 댓글 수정
+	    		replyService.update({
+	    			rno : 18,
+	    			bno : bnoValue,
+	    			reply : "Modified Reply..."
+	    		}, function(result) {
+	    			alert("수정 완료");
+	    		})
+	    		 */
+	    		/* 
+	    		//19번 댓글 삭제 테스트
+	    		replyService.remove(19, function(count) {
+	    			console.log(count);
+	    			
+	    			if (count === "success") alert("REMOVED");
+	    		}, function (err) {
+	    			alert("ERROR....");
+	    		}
+	    		);
+	    		 */
+	    		/* 
+	    		//for replyService getList test
+	    		// select.jsp 내부에서 Ajax 호출은 replyService라는 이름의 객체에 감춰져 있으므로 필요한 파라미터들만 전달하는 형태로 간결해진다
+	    		replyService.getList({bno:bnoValue, page:1}, function(list) {
+	    				// JavaScript의 객체 타입으로 만들어서 전송해주고, Ajax 전송 결과를 처리하는 함수를 파라미터로 같이 전달
+	    					for (var i = 0, len = list.length || 0; i <len; i++) {
+	    						console.log(list[i]);
+	    					}
+	    				});
+	    		 */
+	    		/* 
 	    		//for replyService add test
 	    		//add()에 던져야하는 파라미터는 JavaScript의 객체 타입으로 만들어서 전송해주고, Ajax 전송 결과를 처리하는 함수를 파라미터로 같이 전달
 	    		replyService.add( // select.jsp 내부에서 Ajax 호출은 replyService라는 이름의 객체에 감춰져 있으므로 필요한 파라미터들만 전달하는 형태로 간결해진다
@@ -91,8 +217,93 @@
 	    					alert("RESULT : " + result);
 	    				}
 	    		);
+	    		 */
+	    		 
+	    		 // New Reply 버튼 작동
+	    		 var modal = $(".modal");
+	    		 var modalInputReply = modal.find("input[name='reply']");
+	    		 var modalInputReplyer = modal.find("input[name='replyer']");
+	    		 var modalInputReplyDate = modal.find("input[name='replyDate']");
+	    		 
+	    		 var modalModBtn = $("#modalModBtn");
+	    		 var modalRemoveBtn = $("#modalRemoveBtn"); 
+	    		 var modalRegisterBtn = $("#modalRegisterBtn");
+	    		 
+	    		 $("#addReplyBtn").on("click", function(e){
+	    			 modal.find("input").val("");
+	    			 modalInputReplyDate.closest("div").hide();
+	    			 modal.find("button[id!='modalCloseBtn']").hide();
+	    			 
+	    			 modalRegisterBtn.show();
+	    			 $(".modal").modal("show");
+	    		 });
+	    		 // 모달 창 내에서 Register 버튼 작동
+	    		 modalRegisterBtn.on("click", function(e){
+	    			var reply = {
+	    					reply: modalInputReply.val(),
+	    					replyer: modalInputReplyer.val(),
+	    					bno: bnoValue
+	    			};
+	    			replyService.add(reply, function(result){
+	    				alert(result);
+	    				
+	    				modal.find("input").val("");
+	    				modal.modal("hide");
+	    				// 댓글이 처리 된 후 댓글 목록 갱신 (새로 등록된 댓글)
+	   	    		 	showList(1);
+	    			})
+	    			 
+	    		 });
+	    		 
+	    		 //댓글 클릭 이벤트 처리
+	    		 $(".chat").on("click", "li", function(e){ // 이미 존재하는 DOM 요소에 이벤트를 처리. 실제 이벤트의 대상은 <li>태그
+	    			var rno = $(this).data("rno");
+	    			console.log(rno);
+	    			// 특정 댓글 조회 클릭 이벤트 처리
+	    			replyService.get(rno, function(reply){
+	    				modalInputReply.val(reply.reply);
+	    				modalInputReplyer.val(reply.replyer);
+	    				modalInputReplyDate.val(replyService.displayTime( reply.replyDate)).attr("readonly", "readonly");
+	    				modal.data("rno", reply.rno);
+	    				
+	    				modal.find("button[id!='modalCloseBtn']").hide();
+	    				modalModBtn.show();
+	    				modalRemoveBtn.show();
+	    				
+	    				$(".modal").modal("show");
+	    				
+	    			});
+	    		 });
+	    		 
+	    		 //댓글 수정 버튼 동작
+	    		 modalModBtn.on("click", function(e){
+	    			var reply = {rno:modal.data("rno"), reply:modalInputReply.val()};
+	    			
+	    			replyService.update(reply, function(result){
+	    				alert(result);
+	    				modal.modal("hide");
+	    				showList(1);
+	    				
+	    			});
+	    			 
+	    		 });
+	    		 //댓글 삭제
+	    		 modalRemoveBtn.on("click", function(e){
+		    			var reply = modal.data("rno");
+		    			
+		    			replyService.remove(reply, function(result){
+		    				alert(result);
+		    				modal.modal("hide");
+		    				showList(1);
+		    				
+		    			});
+		    			 
+		    		 });
+
+            }); 
+	    		
             </script>
-            
+         
             <!-- 버튼을 클릭하면 operForm action 실행 -->
             <script type="text/javascript">
             	$(document).ready(function(){

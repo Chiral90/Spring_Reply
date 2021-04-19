@@ -73,7 +73,7 @@ public class ReplyMapperTests {
 		log.info("Update Count : " + count);
 	}
 	
-	@Test
+	//@Test
 	public void testReadReply() {
 		
 		Criteria cri = new Criteria();
@@ -83,6 +83,15 @@ public class ReplyMapperTests {
 		
 		replies.forEach(reply -> log.info(reply));
 		
+	}
+	
+	@Test
+	public void testList2() {
+		Criteria cri = new Criteria(1, 10);
+		//917482번 게시물
+		List<ReplyVO> replies = mapper.getListWithPaging(cri, 917482);
+		
+		replies.forEach(reply -> log.info(reply));
 	}
 
 }

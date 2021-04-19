@@ -34,11 +34,12 @@ public class ReplyController {
 		
 		log.info("ReplyVO : " + vo);
 		
-		int insertCount = service.register(vo); //ServiceImpl 호출 -> register() 호출 -> 댓글이 추가된 숫자를 확인해서 브라우저에 '200 OK' 혹은 '500 Internal Server Error'를 리턴
-		
+		int insertCount = service.register(vo); //ServiceImpl 호출 -> register() 호출 -> 댓글이 추가된 숫자를 확인해서 브라우저에 '200 OK' 혹은 '500 Internal Server Error'를 리턴 // 실제 인서트 되는 데이터
+		// Java에서는 정상적으로 처리하면 1이 저장
 		log.info("Reply INSERT COUNT : " + insertCount);
 		
-		return insertCount == 1 ? new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		//insert, update 등은 실행 결과를 1, 0으로 리턴
+		return insertCount == 1 ? new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // success는 reply.js의 success function의 result과 매칭
 		
 	}
 	
@@ -55,7 +56,7 @@ public class ReplyController {
 	@GetMapping(value = "/{rno}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE })
 	public ResponseEntity<ReplyVO> get(@PathVariable("rno") int rno) {
 		log.info("get : " + rno);
-		return new ResponseEntity<>(service.get(rno), HttpStatus.OK);
+		return new ResponseEntity<>(service.get(rno), HttpStatus.OK); //HttpStatus.OK가 들어 올 때 결과를 success에 전달
 	}
 	
 	@DeleteMapping(value="/{rno}", produces = {MediaType.TEXT_PLAIN_VALUE})
