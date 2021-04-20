@@ -20,4 +20,6 @@ public interface ReplyMapper {
 			@Param("cri") Criteria cri,
 			//bno는 mapper.xml의 #{bno}와 매치
 			@Param("bno") int bno);
+	
+	public int getCountByBno (int bno);
 }

@@ -1,7 +1,5 @@
 package org.zerock.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.domain.Criteria;
+import org.zerock.domain.ReplyPageDTO;
 import org.zerock.domain.ReplyVO;
 import org.zerock.service.ReplyService;
 
@@ -45,12 +44,24 @@ public class ReplyController {
 	
 	@GetMapping(value = "/pages/{bno}/{page}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE })
 	// getList()는 Criteria를 이용해서 파라미터를 수집. "/pages/{bno}/{page}"의 "page"값은 Criteria를 생성해서 직접 처리해야 한다. "/pages/{bno}/{page}"의 bno는 @PathVariable을 이용해서 파라미터로 처리한다
+	//전체 댓글 불러오기 - 페이징x
+	/*
 	public ResponseEntity<List<ReplyVO>> getList(@PathVariable("page") int page, @PathVariable("bno") int bno) {
 		log.info("getList... ");
 		Criteria cri = new Criteria(page, 10);
 		log.info(cri);
 		
 		return new ResponseEntity<>(service.getList(cri, bno), HttpStatus.OK);
+	}
+	*/
+	//게시글 댓글 조회 - 페이징 고려
+	public ResponseEntity<ReplyPageDTO> getList(@PathVariable("page") int page, @PathVariable("bno") int bno) {
+		
+		Criteria cri = new Criteria(page, 10);
+		log.info("get reply list bno : " + bno);
+		log.info(cri);
+		
+		return new ResponseEntity<>(service.getListPage(cri, bno), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{rno}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE })
