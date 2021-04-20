@@ -82,7 +82,7 @@
                     	<div class="panel-body">
                     		<ul class="chat">
                     			<!-- start reply -->
-                    			<li class="left clearfix" data-rno='12'>
+                    			<!-- <li class="left clearfix" data-rno='12'>
                     				<div>
                     					<div class="header">
                     						<strong class="primary-font">replyer</strong>
@@ -90,10 +90,14 @@
                     					</div>
                     					<p>reply</p>
                     				</div>
-                    			</li>
+                    			</li> -->
                     			<!-- end reply -->
                     		</ul>
                     		<!-- end ul -->
+                    		<!-- 댓글 페이지 번호 출력 -->
+                    		<div class="panel-footer">
+                    			
+                    		</div>
                     	</div>
                     	
                     </div>
@@ -152,7 +156,35 @@
 	    		
 	    		showList(1);
 	    		
-	    		function showList(page) { // 페이지 번호를 파라미터로 받는다,
+	    		function showList(page) { // 페이지 번호를 파라미터로 받는다
+	    			console.log("show list " + page);
+	    		
+	    			replyService.getList({bno:bnoValue, page:page||1}, function(replyCnt, list) { //해당 게시물 댓글 개수, 전체 댓글 같이 받아옴
+	    				console.log("replyCnt : " + replyCnt);
+	    				console.log("list : " + list);
+	    				console.log(list);
+	    				
+	    				if (page == -1) { // 페이지 번호가 '-1'로 전달되면 마지막 페이지를 찾아서 다시 호출. 사용자가 새로운 댓글을 추가하면 showList(-1)을 호출해서 먼저 전체 댓글의 숫자를 파악하고 다시 마지막 페이지를 호출해서 이동
+	    					pageNum = Math.ceil(replyCnt/10.0);
+	    					showList(pageNum);
+	    					return;
+	    				}
+	    				
+	    				var str="";
+	    				if(list == null || list.length==0) {
+	    					return;
+	    				}
+	    				for (var i = 0, len = list.length || 0; i < len; i++) {
+	    					str +="<li class='left clearfix' data-rno='"+list[i].rno+"'>";
+	    					str +="		<div><div class='header'><strong class='primary-font'>"+list[i].replyer+"</strong>";
+	    					str +="			<small class='pull-right text-muted'>"+replyService.displayTime(list[i].replyDate)+"</small></div>";
+	    					str +="			<p>"+list[i].reply+"</p></div></li>";
+	    				}
+	    				replyUL.html(str);
+	    				showReplyPage(replyCnt);
+	    			}); // end function
+	    		/*
+	    		//페이징 고려x
 	    			replyService.getList({bno:bnoValue, page:page||1}, function(list) { // 만일 파라미터가 없는 경우 자동으로 1페이지가 되도록 설정
 	    				var str="";
 	    				if(list == null || list.length==0) {
@@ -167,7 +199,7 @@
 	    				}
 	    				replyUL.html(str);
 	    				}); // end function
-	    					
+	    		 */			
 	    		}// end showList
 	    		
 	    		//test
@@ -250,7 +282,9 @@
 	    				modal.find("input").val("");
 	    				modal.modal("hide");
 	    				// 댓글이 처리 된 후 댓글 목록 갱신 (새로 등록된 댓글)
-	   	    		 	showList(1);
+	   	    		 	//showList(1);
+	    				// 댓글 등록 시 마지막 페이지 호출
+	    				showList(-1);
 	    			})
 	    			 
 	    		 });
@@ -282,7 +316,8 @@
 	    			replyService.update(reply, function(result){
 	    				alert(result);
 	    				modal.modal("hide");
-	    				showList(1);
+	    				//showList(1);
+	    				showList(pageNum); // 댓글의 수정 시 현재 댓글이 포함된 페이지로 이동
 	    				
 	    			});
 	    			 
@@ -294,11 +329,56 @@
 		    			replyService.remove(reply, function(result){
 		    				alert(result);
 		    				modal.modal("hide");
-		    				showList(1);
-		    				
+		    				//showList(1);
+		    				showList(pageNum); // 댓글의 삭제 시 현재 댓글이 포함된 페이지로 이동
 		    			});
 		    			 
 		    		 });
+	    		 
+	    		 //div class='panel-footer'에 댓글 페이지 번호를 출력하는 로직
+	    		 var pageNum = 1;
+	    		 var replyPageFooter = $(".panel-footer");
+	    		 
+	    		 function showReplyPage(replyCnt) {
+	    			 var endNum = Math.ceil(pageNum / 10.0) * 10;
+	    			 var startNum = endNum - 9;
+	    			 
+	    			 var prev = startNum != 1;
+	    			 var next = false;
+	    			 
+	    			 if (endNum * 10 >= replyCnt) {
+	    				 endNum = Math.ceil(replyCnt / 10.0);
+	    			 }
+	    			 if (endNum * 10 < replyCnt) {
+	    				 next = true;
+	    			 }
+	    			 var str = "<ul class='pagination pull-right'>";
+	    			 
+	    			 if (prev) {
+	    				 str += "<li class='page-item'><a class='page-link' href='"+(startNum - 1) + "'>Previous</a></li>";
+	    			 }
+	    			 
+	    			 for (var i = startNum ; i <= endNum; i++) {
+	    				 var active = pageNum == i ? "active" : "";
+	    				 str += "<li class='page-item " + active + " '><a class='page-link' href='" + i + "'>"+ i + "</a></li>";
+	    			 }
+	    			 if (next) {
+	    				 str += "<li class='page-item'><a class='page-link' href='"+(endNum + 1) + "'>Next</a></li>";
+	    			 }
+	    			 str += "</ul></div>";
+	    			 console.log(str);
+	    			 replyPageFooter.html(str);
+	    		 }
+	    		 // 페이지의 번호를 클릭했을 때 새로운 댓글을 가져오도록 하는 부분
+	    		 replyPageFooter.on("click", "li a", function(e) { // 댓글의 페이지 번호는 a 태그 내에 존재
+	    			 e.preventDefault();
+	    			 console.log("page click");
+	    			 
+	    			 var targetPageNum = $(this).attr("href"); // 페이지 번호 클릭 시 댓글 페이지 번호를 변경
+	    			 console.log("targetPageNum : " + targetPageNum);
+	    			 pageNum = targetPageNum;
+	    			 showList(pageNum);
+	    		 });
 
             }); 
 	    		
